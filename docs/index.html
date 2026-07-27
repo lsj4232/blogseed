@@ -6,28 +6,32 @@
 <title>블로그 초안 생성기 (BlogSeed) 설치</title>
 <meta name="description" content="씨앗 주제와 스토리보드를 넣으면 소제목 5개, 문단 3개씩 블로그 초안을 만들어 주는 안드로이드 앱">
 <style>
-  :root { color-scheme: light dark; --fg:#16181d; --bg:#fbfaf7; --muted:#5f6470; --line:#e3e1da; --accent:#2e5d4b; --card:#ffffff; }
-  @media (prefers-color-scheme: dark) {
-    :root { --fg:#e8e8e4; --bg:#101210; --muted:#9aa0a6; --line:#2a2d29; --accent:#8fd3b6; --card:#191c19; }
-  }
+  :root { color-scheme:dark; --fg:#f4f7f5; --bg:#060b0a; --muted:#a9b8b1;
+          --line:#21342d; --accent:#22ffa6; --violet:#9556f8; --cyan:#1de7e0;
+          --card:rgba(16,26,23,.94); }
   * { box-sizing: border-box; }
-  body { margin:0; padding:32px 20px 64px; background:var(--bg); color:var(--fg);
+  body { margin:0; padding:32px 20px 64px;
+         background:radial-gradient(circle at 50% -10%,#174e36 0,#0b1914 32%,var(--bg) 62%);
+         color:var(--fg);
          font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR','Malgun Gothic',sans-serif;
          line-height:1.7; max-width:680px; margin-inline:auto; }
-  h1 { font-size:1.7rem; line-height:1.3; margin:0 0 6px; }
-  h2 { font-size:1.1rem; margin:2.2rem 0 .6rem; padding-top:1.2rem; border-top:1px solid var(--line); }
+  h1 { font-size:2.2rem; line-height:1.2; letter-spacing:-.04em; margin:0 0 6px; }
+  h1::after { content:' 1.2'; color:var(--accent); font-size:.7rem; letter-spacing:.08em; vertical-align:top; }
+  h2 { font-size:1.05rem; margin:2rem 0 .75rem; color:var(--accent); text-transform:uppercase;
+       letter-spacing:.08em; }
   .lead { color:var(--muted); margin:0 0 24px; }
-  .btn { display:block; text-align:center; background:var(--accent); color:var(--bg);
-         padding:16px; border-radius:12px; font-weight:700; text-decoration:none; font-size:1.05rem; }
+  .btn { display:block; text-align:center; background:linear-gradient(120deg,var(--accent),var(--cyan));
+         color:#002114; padding:17px; border-radius:18px; font-weight:750; text-decoration:none; font-size:1.05rem;
+         box-shadow:0 12px 36px rgba(34,255,166,.18); }
   .btn small { display:block; font-weight:400; opacity:.85; font-size:.8rem; margin-top:4px; }
   ol, ul { padding-left:1.2em; }
   li { margin:.35em 0; }
-  code { background:var(--card); border:1px solid var(--line); border-radius:5px; padding:1px 5px; font-size:.9em; }
+  code { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:2px 6px; font-size:.9em; }
   table { width:100%; border-collapse:collapse; margin:.6rem 0; display:block; overflow-x:auto; }
   th, td { border:1px solid var(--line); padding:8px 10px; text-align:left; font-size:.92rem; vertical-align:top; }
-  th { background:var(--card); }
-  .note { background:var(--card); border:1px solid var(--line); border-left:3px solid var(--accent);
-          border-radius:8px; padding:12px 14px; font-size:.92rem; color:var(--muted); }
+  th { background:var(--card); color:var(--cyan); }
+  .note { background:var(--card); border:1px solid var(--line); border-left:3px solid var(--violet);
+          border-radius:16px; padding:14px 16px; font-size:.92rem; color:var(--muted); }
   footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line); font-size:.85rem; color:var(--muted); }
   a { color:var(--accent); }
 </style>
@@ -35,11 +39,11 @@
 <body>
 
 <h1>블로그 초안 생성기</h1>
-<p class="lead">씨앗 주제 한 줄과 스토리보드를 넣으면, 소제목 5개에 문단 3개씩 붙은 블로그 초안을 만든다. 소제목마다 사진을 붙여 네이버, 티스토리로 내보낸다.</p>
+<p class="lead">아이디어를 발행 가능한 초안으로. 씨앗 주제와 스토리보드를 넣으면 소제목 5개에 문단 3개씩 붙은 블로그 글을 만든다.</p>
 
 <a class="btn" href="https://github.com/lsj4232/blogseed/releases/latest/download/blogseed-debug.apk">
   APK 내려받기
-  <small>안드로이드 8.0 이상 · 약 17 MB</small>
+  <small>안드로이드 8.0 이상 · 버전 1.2</small>
 </a>
 
 <h2>설치</h2>

@@ -1,5 +1,7 @@
 package com.iplab.blogseed.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +29,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -42,13 +47,24 @@ fun SettingsScreen(vm: MainViewModel, padding: PaddingValues, onBack: () -> Unit
     var showKey by remember { mutableStateOf(false) }
 
     LazyColumn(
-        modifier = Modifier.fillMaxWidth().padding(padding),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Brush.verticalGradient(listOf(Color(0xFF0C2119), SeedCanvas)))
+            .padding(padding),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         contentPadding = PaddingValues(bottom = 32.dp)
     ) {
         item {
             TopAppBar(
-                title = { Text("설정") },
+                title = {
+                    Column {
+                        Text("Engine Room", style = MaterialTheme.typography.titleLarge)
+                        Text("생성 엔진과 API 연결", style = MaterialTheme.typography.bodySmall, color = SeedMint)
+                    }
+                },
+                colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
+                ),
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "뒤로")
@@ -58,26 +74,41 @@ fun SettingsScreen(vm: MainViewModel, padding: PaddingValues, onBack: () -> Unit
         }
 
         item {
-            Text("생성 엔진", style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(start = 16.dp))
+            Text(
+                "GENERATION ENGINE",
+                style = MaterialTheme.typography.labelSmall,
+                color = SeedMint,
+                modifier = Modifier.padding(start = 16.dp)
+            )
         }
 
         for (p in Provider.entries) {
             item(key = p.name) {
-                Row(
+                Card(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .selectable(selected = selected == p, onClick = { vm.selectProvider(p) })
-                        .padding(horizontal = 16.dp, vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .fillMaxWidth().padding(horizontal = 16.dp)
+                        .selectable(selected = selected == p, onClick = { vm.selectProvider(p) }),
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (selected == p) MaterialTheme.colorScheme.primaryContainer else SeedPanel
+                    ),
+                    border = BorderStroke(
+                        1.dp,
+                        if (selected == p) SeedMint.copy(alpha = .55f) else MaterialTheme.colorScheme.outlineVariant
+                    )
                 ) {
-                    RadioButton(selected = selected == p, onClick = { vm.selectProvider(p) })
-                    Column(Modifier.padding(start = 4.dp)) {
-                        Text(p.label)
-                        Text(
-                            p.keyHelp,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(selected = selected == p, onClick = { vm.selectProvider(p) })
+                        Column(Modifier.padding(start = 4.dp)) {
+                            Text(p.label)
+                            Text(
+                                p.keyHelp,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                 }
             }
@@ -85,7 +116,11 @@ fun SettingsScreen(vm: MainViewModel, padding: PaddingValues, onBack: () -> Unit
 
         if (selected != Provider.OFFLINE) {
             item {
-                Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    colors = CardDefaults.cardColors(containerColor = SeedPanel),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                ) {
                     Column(
                         Modifier.padding(12.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)

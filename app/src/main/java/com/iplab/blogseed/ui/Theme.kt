@@ -1,163 +1,136 @@
 package com.iplab.blogseed.ui
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
 /*
- * 디자인 컨셉: 에디토리얼(원고지).
- *
- * 이 앱에서 사용자가 오래 들여다보는 것은 버튼이 아니라 자기가 쓴 글이다.
- * 그래서 세 가지를 규칙으로 삼는다.
- *   1) 바탕은 순백이 아니라 살짝 누런 종이색. 장시간 읽어도 눈이 덜 시리다.
- *   2) 글 본문은 세리프에 넓은 행간. UI 라벨만 산세리프로 두어 "읽을 것"과 "누를 것"을 분리한다.
- *   3) 강조색은 잉크 계열 딥그린 하나. 원고 위에 색이 튀지 않게 한다.
- *
- * dynamicColor(Material You)는 일부러 쓰지 않는다. 기기 배경화면에 따라
- * 종이색과 잉크색이 바뀌면 위 컨셉이 통째로 무너지기 때문이다.
+ * Visual language: nocturnal creative dashboard.
+ * Near-black green canvas, translucent-looking raised panels, vivid mint actions
+ * and violet/cyan accents. The structure remains BlogSeed's own writing workflow.
  */
+val SeedMint = Color(0xFF22FFA6)
+val SeedViolet = Color(0xFF9556F8)
+val SeedCyan = Color(0xFF1DE7E0)
+val SeedCanvas = Color(0xFF060B0A)
+val SeedPanel = Color(0xFF101A17)
+val SeedPanelHigh = Color(0xFF17241F)
 
-private val PaperLight = lightColorScheme(
-    primary = Color(0xFF2F5D4B),          // 잉크 그린
-    onPrimary = Color(0xFFFBF8F1),
-    primaryContainer = Color(0xFFD8E7DE),
-    onPrimaryContainer = Color(0xFF17342A),
-    secondary = Color(0xFF8A6A45),        // 갈색 주석
-    onSecondary = Color(0xFFFBF8F1),
-    secondaryContainer = Color(0xFFEDE0CE),
-    onSecondaryContainer = Color(0xFF3D2D19),
-    background = Color(0xFFFBF8F1),       // 종이
-    onBackground = Color(0xFF1F1D18),
-    surface = Color(0xFFFFFDF8),
-    onSurface = Color(0xFF1F1D18),
-    surfaceVariant = Color(0xFFF0EADC),
-    onSurfaceVariant = Color(0xFF6B6555),
-    outline = Color(0xFFCFC7B4),
-    outlineVariant = Color(0xFFE4DDCC),
-    error = Color(0xFF9C4234),
-    onError = Color(0xFFFBF8F1)
+private val SeedDark = darkColorScheme(
+    primary = SeedMint,
+    onPrimary = Color(0xFF002114),
+    primaryContainer = Color(0xFF123D2D),
+    onPrimaryContainer = Color(0xFFB8FFDA),
+    secondary = SeedViolet,
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFF332153),
+    onSecondaryContainer = Color(0xFFE7D8FF),
+    tertiary = SeedCyan,
+    onTertiary = Color(0xFF00201F),
+    tertiaryContainer = Color(0xFF0B4544),
+    onTertiaryContainer = Color(0xFFAAFFFC),
+    background = SeedCanvas,
+    onBackground = Color(0xFFF4F7F5),
+    surface = SeedPanel,
+    onSurface = Color(0xFFF4F7F5),
+    surfaceVariant = SeedPanelHigh,
+    onSurfaceVariant = Color(0xFFA9B8B1),
+    outline = Color(0xFF385047),
+    outlineVariant = Color(0xFF21342D),
+    error = Color(0xFFFF6F7D),
+    onError = Color(0xFF300008),
+    errorContainer = Color(0xFF4A1820),
+    onErrorContainer = Color(0xFFFFDADD)
 )
 
-private val PaperDark = darkColorScheme(
-    primary = Color(0xFF9CCDB6),
-    onPrimary = Color(0xFF12291F),
-    primaryContainer = Color(0xFF23402F),
-    onPrimaryContainer = Color(0xFFD8E7DE),
-    secondary = Color(0xFFD9BC95),
-    onSecondary = Color(0xFF2C1F10),
-    secondaryContainer = Color(0xFF3E2F1D),
-    onSecondaryContainer = Color(0xFFEDE0CE),
-    background = Color(0xFF13120F),       // 불 끈 책상
-    onBackground = Color(0xFFEDE9DE),
-    surface = Color(0xFF1B1A16),
-    onSurface = Color(0xFFEDE9DE),
-    surfaceVariant = Color(0xFF2A2822),
-    onSurfaceVariant = Color(0xFF9C9484),
-    outline = Color(0xFF433F36),
-    outlineVariant = Color(0xFF2F2C26),
-    error = Color(0xFFE4948A),
-    onError = Color(0xFF2A0F0A)
-)
-
-/** 원고는 세리프, 조작부는 산세리프. */
-private val EditorialType = Typography(
+private val DashboardType = Typography(
     displaySmall = TextStyle(
-        fontFamily = FontFamily.Serif,
-        fontWeight = FontWeight.Bold,
-        fontSize = 30.sp,
-        lineHeight = 38.sp
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 34.sp,
+        lineHeight = 40.sp,
+        letterSpacing = (-0.8).sp
     ),
     headlineMedium = TextStyle(
-        fontFamily = FontFamily.Serif,
-        fontWeight = FontWeight.Bold,
-        fontSize = 25.sp,
-        lineHeight = 33.sp
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 27.sp,
+        lineHeight = 34.sp
     ),
     headlineSmall = TextStyle(
-        fontFamily = FontFamily.Serif,
+        fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 21.sp,
+        fontSize = 22.sp,
         lineHeight = 29.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = FontFamily.Serif,
+        fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 19.sp,
-        lineHeight = 26.sp
+        fontSize = 20.sp,
+        lineHeight = 27.sp
     ),
     titleMedium = TextStyle(
-        fontFamily = FontFamily.Serif,
-        fontWeight = FontWeight.SemiBold,
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Medium,
         fontSize = 17.sp,
         lineHeight = 24.sp
     ),
-    // 본문. 행간을 글자크기의 1.65배로 잡아 긴 한글 문단이 답답하지 않게 한다.
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Serif,
-        fontSize = 17.sp,
-        lineHeight = 28.sp
+        fontFamily = FontFamily.SansSerif,
+        fontSize = 16.sp,
+        lineHeight = 25.sp
     ),
     bodyMedium = TextStyle(
-        fontFamily = FontFamily.Serif,
-        fontSize = 15.sp,
-        lineHeight = 25.sp
+        fontFamily = FontFamily.SansSerif,
+        fontSize = 14.sp,
+        lineHeight = 22.sp
     ),
     bodySmall = TextStyle(
         fontFamily = FontFamily.SansSerif,
-        fontSize = 13.sp,
-        lineHeight = 19.sp
+        fontSize = 12.sp,
+        lineHeight = 18.sp
     ),
     labelLarge = TextStyle(
         fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        letterSpacing = 0.02.em
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp
     ),
     labelMedium = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        letterSpacing = 0.04.em
+        fontSize = 12.sp
     ),
-    // 섹션 머리표. 자간을 벌려 본문과 확실히 다른 층위로 읽히게 한다.
     labelSmall = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.SemiBold,
         fontSize = 11.sp,
-        letterSpacing = 0.16.em
+        letterSpacing = 1.2.sp
     )
 )
 
-/** 종이를 오려 붙인 느낌이라 모서리는 거의 굴리지 않는다. */
-private val PaperShapes = Shapes(
-    extraSmall = RoundedCornerShape(2.dp),
-    small = RoundedCornerShape(4.dp),
-    medium = RoundedCornerShape(6.dp),
-    large = RoundedCornerShape(8.dp),
-    extraLarge = RoundedCornerShape(12.dp)
+private val DashboardShapes = Shapes(
+    extraSmall = RoundedCornerShape(10.dp),
+    small = RoundedCornerShape(14.dp),
+    medium = RoundedCornerShape(18.dp),
+    large = RoundedCornerShape(24.dp),
+    extraLarge = RoundedCornerShape(30.dp)
 )
 
 @Composable
-fun BlogSeedTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
+fun BlogSeedTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = if (darkTheme) PaperDark else PaperLight,
-        typography = EditorialType,
-        shapes = PaperShapes,
+        colorScheme = SeedDark,
+        typography = DashboardType,
+        shapes = DashboardShapes,
         content = content
     )
 }

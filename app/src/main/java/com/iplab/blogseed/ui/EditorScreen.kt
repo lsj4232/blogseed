@@ -4,6 +4,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -45,6 +47,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -105,13 +109,28 @@ fun EditorScreen(vm: MainViewModel, padding: PaddingValues, onBack: () -> Unit) 
     }
 
     LazyColumn(
-        modifier = Modifier.fillMaxWidth().padding(padding),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                Brush.verticalGradient(
+                    listOf(Color(0xFF0C2119), SeedCanvas, SeedCanvas)
+                )
+            )
+            .padding(padding),
         contentPadding = PaddingValues(bottom = 48.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
             TopAppBar(
-                title = { Text("초안 편집") },
+                title = {
+                    Column {
+                        Text("Draft Studio", style = MaterialTheme.typography.titleLarge)
+                        Text("5개 섹션 편집", style = MaterialTheme.typography.bodySmall, color = SeedMint)
+                    }
+                },
+                colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
+                ),
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "뒤로")
@@ -199,7 +218,8 @@ fun EditorScreen(vm: MainViewModel, padding: PaddingValues, onBack: () -> Unit) 
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.errorContainer
-                    )
+                    ),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = .45f))
                 ) {
                     Text(
                         "소제목 ${draft.missingImageCount}개에 이미지가 없다. 소제목마다 최소 1장이 필요하다.",
@@ -212,7 +232,12 @@ fun EditorScreen(vm: MainViewModel, padding: PaddingValues, onBack: () -> Unit) 
         }
 
         item {
-            Column(Modifier.padding(horizontal = 16.dp)) {
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                colors = CardDefaults.cardColors(containerColor = SeedPanel),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            ) {
+            Column(Modifier.padding(16.dp)) {
                 OutlinedTextField(
                     value = draft.title,
                     onValueChange = vm::updateTitle,
@@ -230,6 +255,7 @@ fun EditorScreen(vm: MainViewModel, padding: PaddingValues, onBack: () -> Unit) 
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+            }
             }
         }
 
@@ -260,7 +286,12 @@ fun EditorScreen(vm: MainViewModel, padding: PaddingValues, onBack: () -> Unit) 
         }
 
         item {
-            Column(Modifier.padding(horizontal = 16.dp)) {
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                colors = CardDefaults.cardColors(containerColor = SeedPanel),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            ) {
+            Column(Modifier.padding(16.dp)) {
                 OutlinedTextField(
                     value = draft.outro,
                     onValueChange = vm::updateOutro,
@@ -274,6 +305,7 @@ fun EditorScreen(vm: MainViewModel, padding: PaddingValues, onBack: () -> Unit) 
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
+            }
             }
         }
     }
@@ -299,12 +331,34 @@ private fun SectionCard(
     onCamera: () -> Unit,
     onRemoveImage: (String) -> Unit
 ) {
-    Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        colors = CardDefaults.cardColors(containerColor = SeedPanel),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    ) {
         Column(
             modifier = Modifier.padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text("소제목 ${index + 1}", style = MaterialTheme.typography.labelLarge)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(99.dp))
+                        .background(if (index % 2 == 0) SeedViolet else SeedCyan)
+                        .padding(horizontal = 10.dp, vertical = 5.dp)
+                ) {
+                    Text(
+                        "%02d".format(index + 1),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = if (index % 2 == 0) Color.White else Color(0xFF00201F)
+                    )
+                }
+                Text(
+                    "  CONTENT BLOCK",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
             OutlinedTextField(
                 value = section.heading,
                 onValueChange = onHeading,
@@ -339,7 +393,8 @@ private fun SectionCard(
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier
                                         .size(110.dp)
-                                        .clip(RoundedCornerShape(10.dp))
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(SeedPanelHigh),
                                 )
                                 IconButton(
                                     onClick = { onRemoveImage(path) },

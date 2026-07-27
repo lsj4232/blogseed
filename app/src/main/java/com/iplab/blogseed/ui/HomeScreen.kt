@@ -1,8 +1,10 @@
 package com.iplab.blogseed.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -20,6 +23,8 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -31,7 +36,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.iplab.blogseed.MainViewModel
 import com.iplab.blogseed.model.BlogDraft
@@ -40,14 +48,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-/*
- * 에디토리얼 레이아웃 규칙(Theme.kt의 컨셉을 화면에 적용한 것)
- *   - 상단은 앱바가 아니라 지면의 제호(masthead). 굵은 세리프 제목 아래 가로줄 하나.
- *   - 각 입력 구역은 카드로 띄우지 않고, 자간을 벌린 작은 머리표 + 가는 구분선으로만 나눈다.
- *     종이 지면처럼 배경이 끊기지 않게 하려는 것이다.
- *   - 좌우 여백은 20dp로 통일해 글줄의 시작선이 화면 전체에서 하나로 맞는다.
- */
-private val Gutter = 20.dp
+private val Gutter = 16.dp
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -58,14 +59,22 @@ fun HomeScreen(
     onSettings: () -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxWidth().padding(padding),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                Brush.radialGradient(
+                    colors = listOf(Color(0xFF123A29), SeedCanvas),
+                    radius = 900f
+                )
+            )
+            .padding(padding),
         contentPadding = PaddingValues(bottom = 40.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item { Masthead(onSettings = onSettings) }
 
         item {
-            Column(Modifier.padding(horizontal = Gutter)) {
+            DashboardCard {
                 SectionLabel("씨앗")
                 OutlinedTextField(
                     value = vm.seed,
@@ -80,7 +89,7 @@ fun HomeScreen(
         }
 
         item {
-            Column(Modifier.padding(horizontal = Gutter)) {
+            DashboardCard {
                 SectionLabel("스토리보드")
                 Text(
                     "한 줄에 한 장면씩 적으면 순서대로 5개 소제목에 배분된다.",
@@ -99,7 +108,7 @@ fun HomeScreen(
         }
 
         item {
-            Column(Modifier.padding(horizontal = Gutter)) {
+            DashboardCard {
                 SectionLabel("톤")
                 // 톤은 개수가 바뀔 수 있으므로 2개씩 끊지 않고 흐르게 둔다
                 FlowRow(
@@ -118,8 +127,7 @@ fun HomeScreen(
         }
 
         item {
-            Column(Modifier.padding(horizontal = Gutter)) {
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            DashboardCard {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
@@ -134,7 +142,11 @@ fun HomeScreen(
                 Button(
                     onClick = { vm.generate { onOpenDraft(it) } },
                     enabled = !vm.isGenerating,
-                    modifier = Modifier.fillMaxWidth().height(52.dp)
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        containerColor = SeedMint,
+                        contentColor = Color(0xFF002114)
+                    )
                 ) {
                     if (vm.isGenerating) {
                         CircularProgressIndicator(
@@ -145,7 +157,7 @@ fun HomeScreen(
                         Text("  초안 쓰는 중")
                     } else {
                         Icon(Icons.Filled.AutoAwesome, contentDescription = null)
-                        Text("  초안 생성 (소제목 5개)")
+                        Text("  초안 생성", fontWeight = FontWeight.SemiBold)
                     }
                 }
             }
@@ -154,8 +166,6 @@ fun HomeScreen(
         if (vm.drafts.isNotEmpty()) {
             item {
                 Column(Modifier.padding(horizontal = Gutter)) {
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                    Spacer(Modifier.height(12.dp))
                     SectionLabel("보관함")
                 }
             }
@@ -170,19 +180,18 @@ fun HomeScreen(
     }
 }
 
-/** 지면 제호. 앱 이름을 굵은 세리프로 크게 놓고 아래에 굵은 줄 하나로 지면을 연다. */
 @Composable
 private fun Masthead(onSettings: () -> Unit) {
-    Column(Modifier.padding(start = Gutter, end = 8.dp, top = 16.dp)) {
+    Column(Modifier.padding(start = Gutter, end = 8.dp, top = 22.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(
-                    "블로그 초안",
+                    "BlogSeed",
                     style = MaterialTheme.typography.displaySmall,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = Color.White
                 )
                 Text(
-                    "씨앗과 장면을 넣으면 5×3 구조로 자란다",
+                    "아이디어를 발행 가능한 초안으로",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -191,11 +200,11 @@ private fun Masthead(onSettings: () -> Unit) {
                 Icon(Icons.Filled.Settings, contentDescription = "설정")
             }
         }
-        Spacer(Modifier.height(12.dp))
-        HorizontalDivider(
-            modifier = Modifier.padding(end = 12.dp),
-            thickness = 2.dp,
-            color = MaterialTheme.colorScheme.primary
+        Spacer(Modifier.height(6.dp))
+        Text(
+            "CREATE  •  EDIT  •  PUBLISH",
+            style = MaterialTheme.typography.labelSmall,
+            color = SeedMint
         )
     }
 }
@@ -206,18 +215,37 @@ private fun SectionLabel(text: String) {
     Text(
         text = text,
         style = MaterialTheme.typography.labelSmall,
-        color = MaterialTheme.colorScheme.secondary,
+        color = SeedMint,
         modifier = Modifier.padding(bottom = 6.dp)
     )
 }
 
 @Composable
+private fun DashboardCard(content: @Composable ColumnScope.() -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = Gutter),
+        colors = CardDefaults.cardColors(containerColor = SeedPanel.copy(alpha = 0.94f)),
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+            content = content
+        )
+    }
+}
+
+@Composable
 private fun DraftRow(draft: BlogDraft, onClick: () -> Unit, onDelete: () -> Unit) {
-    Column(Modifier.clickable(onClick = onClick)) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = Gutter).clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor = SeedPanel),
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = Gutter, end = 8.dp, top = 4.dp, bottom = 4.dp),
+                .padding(start = 16.dp, end = 6.dp, top = 12.dp, bottom = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(Modifier.weight(1f)) {
@@ -245,9 +273,5 @@ private fun DraftRow(draft: BlogDraft, onClick: () -> Unit, onDelete: () -> Unit
                 )
             }
         }
-        HorizontalDivider(
-            modifier = Modifier.padding(start = Gutter, end = Gutter),
-            color = MaterialTheme.colorScheme.outlineVariant
-        )
     }
 }

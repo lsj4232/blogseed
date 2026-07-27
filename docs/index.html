@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>블로그 초안 생성기 (BlogSeed) 설치</title>
+<meta name="description" content="씨앗 주제와 스토리보드를 넣으면 소제목 5개, 문단 3개씩 블로그 초안을 만들어 주는 안드로이드 앱">
+<style>
+  :root { color-scheme: light dark; --fg:#16181d; --bg:#fbfaf7; --muted:#5f6470; --line:#e3e1da; --accent:#2e5d4b; --card:#ffffff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --fg:#e8e8e4; --bg:#101210; --muted:#9aa0a6; --line:#2a2d29; --accent:#8fd3b6; --card:#191c19; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:32px 20px 64px; background:var(--bg); color:var(--fg);
+         font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR','Malgun Gothic',sans-serif;
+         line-height:1.7; max-width:680px; margin-inline:auto; }
+  h1 { font-size:1.7rem; line-height:1.3; margin:0 0 6px; }
+  h2 { font-size:1.1rem; margin:2.2rem 0 .6rem; padding-top:1.2rem; border-top:1px solid var(--line); }
+  .lead { color:var(--muted); margin:0 0 24px; }
+  .btn { display:block; text-align:center; background:var(--accent); color:var(--bg);
+         padding:16px; border-radius:12px; font-weight:700; text-decoration:none; font-size:1.05rem; }
+  .btn small { display:block; font-weight:400; opacity:.85; font-size:.8rem; margin-top:4px; }
+  ol, ul { padding-left:1.2em; }
+  li { margin:.35em 0; }
+  code { background:var(--card); border:1px solid var(--line); border-radius:5px; padding:1px 5px; font-size:.9em; }
+  table { width:100%; border-collapse:collapse; margin:.6rem 0; display:block; overflow-x:auto; }
+  th, td { border:1px solid var(--line); padding:8px 10px; text-align:left; font-size:.92rem; vertical-align:top; }
+  th { background:var(--card); }
+  .note { background:var(--card); border:1px solid var(--line); border-left:3px solid var(--accent);
+          border-radius:8px; padding:12px 14px; font-size:.92rem; color:var(--muted); }
+  footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line); font-size:.85rem; color:var(--muted); }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+
+<h1>블로그 초안 생성기</h1>
+<p class="lead">씨앗 주제 한 줄과 스토리보드를 넣으면, 소제목 5개에 문단 3개씩 붙은 블로그 초안을 만든다. 소제목마다 사진을 붙여 네이버, 티스토리로 내보낸다.</p>
+
+<a class="btn" href="https://github.com/lsj4232/blogseed/releases/latest/download/blogseed-debug.apk">
+  APK 내려받기
+  <small>안드로이드 8.0 이상 · 약 17 MB</small>
+</a>
+
+<h2>설치</h2>
+<ol>
+  <li>위 버튼을 <b>폰 브라우저</b>에서 눌러 APK를 받는다.</li>
+  <li>다운로드 알림을 눌러 설치한다.</li>
+  <li>"이 출처의 앱 설치 허용" 안내가 뜨면 허용한다. (구글 플레이를 거치지 않는 앱이라 한 번 묻는다.)</li>
+</ol>
+<p class="note">디버그 서명 APK다. 플레이스토어 배포본이 아니므로 설치 시 경고가 뜬다. 소스는 이 저장소에 전부 공개되어 있다.</p>
+
+<h2>글 생성 엔진 붙이기</h2>
+<p>앱은 키 없이도 <b>오프라인 템플릿</b>으로 5×3 골격을 만든다. 문장까지 써 주게 하려면 키를 넣는다.</p>
+<ol>
+  <li><a href="https://aistudio.google.com/apikey">aistudio.google.com/apikey</a> 접속, 구글 로그인</li>
+  <li><code>Create API key</code> 클릭, <b>새 프로젝트</b> 선택 (결제 붙은 프로젝트를 고르면 과금된다)</li>
+  <li>발급된 키 복사. 카드 등록 화면 없음</li>
+  <li>앱 → 우상단 톱니바퀴 → <b>Google Gemini</b> 선택 → API 키 칸에 붙여넣기 (저장 버튼 없음)</li>
+</ol>
+<p class="note">무료 등급 기준 분당 10회, 하루 1500회. 무료 등급 입력은 구글 모델 학습에 쓰일 수 있으므로, 미공개 원고는 유료 등급을 쓰라. 키는 폰 앱 전용 저장소에만 남고 다른 서버로 보내지 않는다.</p>
+
+<h2>쓰는 순서</h2>
+<ol>
+  <li><b>씨앗</b>에 주제 한 줄. 예: 제주 3박4일 뚜벅이 여행</li>
+  <li><b>스토리보드</b>에 한 줄에 한 장면씩. 줄 순서가 소제목 순서가 된다</li>
+  <li>톤 고르고 <b>초안 생성</b></li>
+  <li>소제목 5개 각각 <b>갤러리</b> 또는 <b>카메라</b>로 사진 1장 이상 첨부</li>
+  <li>우상단 공유 아이콘에서 내보내기</li>
+</ol>
+
+<h2>플랫폼별 내보내기</h2>
+<table>
+  <tr><th>플랫폼</th><th>방법</th></tr>
+  <tr>
+    <td>네이버 블로그</td>
+    <td>HTML 편집 모드가 없다. <code>사진 갤러리에 저장</code> 후 <code>네이버용 텍스트 복사</code>. 붙여넣고 <code>[사진 01]</code> 자리에 같은 번호 사진을 첨부</td>
+  </tr>
+  <tr><td>티스토리, 워드프레스</td><td><code>HTML 소스 복사</code> 또는 <code>.html</code> 파일. 이미지까지 한 번에 들어간다</td></tr>
+  <tr><td>옵시디언, 깃허브</td><td><code>.md</code> 파일 또는 <code>.zip</code> (마크다운 + 이미지)</td></tr>
+</table>
+
+<h2>만들어지는 형식</h2>
+<ul>
+  <li>소제목 정확히 5개, 소제목당 문단 정확히 3개 (모델이 어긋나게 답해도 앱이 맞춰 자르고 채운다)</li>
+  <li>소제목마다 사진 1장 이상. 빠진 소제목은 빨간 경고로 표시</li>
+  <li>소제목마다 어떤 사진을 넣으면 좋을지 제안과 캡션 초안</li>
+</ul>
+
+<footer>
+  소스: <a href="https://github.com/lsj4232/blogseed">github.com/lsj4232/blogseed</a> ·
+  Kotlin, Jetpack Compose, minSdk 26
+</footer>
+
+</body>
+</html>
